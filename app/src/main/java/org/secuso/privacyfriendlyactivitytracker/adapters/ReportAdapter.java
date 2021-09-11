@@ -209,6 +209,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
                 barDataSetReachedDailyGoal.setColor(ContextCompat.getColor(barChartViewHolder.context, R.color.green));
                 barChartViewHolder.mChart.setData(combinedData);
                 barChartViewHolder.mChart.getXAxis().setValueFormatter(new ArrayListAxisValueFormatter(barChartXValues));
+                barChartViewHolder.mChart.getAxisLeft().setAxisMinValue(0);
                 barChartViewHolder.mChart.invalidate();
                 break;
             case TYPE_DAY_CHART:
@@ -289,16 +290,19 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
                 }
                 // add daily step goal
                 if (chartXValues.size() > 0 && chartData.getDisplayedDataType() == ActivityDayChart.DataType.STEPS) {
-                    Entry start = new Entry(0, chartData.getGoal());
-                    Entry end = new Entry(chartXValues.size() - 1, chartData.getGoal());
-                    LineDataSet chartLineDataSet = new LineDataSet(Arrays.asList(start, end), "");
-                    chartLineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-                    chartLineDataSet.setLineWidth(1);
-                    chartLineDataSet.setDrawCircles(false);
-                    chartLineDataSet.setColor(ContextCompat.getColor(chartViewHolder.context, R.color.colorAccent), 200);
-                    chartLineDataSet.setDrawValues(false);
-                    maxValue = Math.max(maxValue, chartData.getGoal());
-                    dataSets.add(chartLineDataSet);
+                    if (chartData.getGoal() <= maxValue * 1.03f) {
+                        Entry start = new Entry(0, chartData.getGoal());
+                        Entry end = new Entry(chartXValues.size() - 1, chartData.getGoal());
+                        LineDataSet chartLineDataSet = new LineDataSet(Arrays.asList(start, end), "");
+
+                        chartLineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+                        chartLineDataSet.setLineWidth(1);
+                        chartLineDataSet.setDrawCircles(false);
+                        chartLineDataSet.setColor(ContextCompat.getColor(chartViewHolder.context, R.color.colorAccent), 200);
+                        chartLineDataSet.setDrawValues(false);
+                        // maxValue = Math.max(maxValue, chartData.getGoal());
+                        dataSets.add(chartLineDataSet);
+                    }
                 }
                 // Workaround since scaling does not work correctly in MPAndroidChart v3.0.0.0-beta1
                 {
@@ -313,6 +317,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
                 }
                 LineData data = new LineData(dataSets);
                 chartViewHolder.mChart.setData(data);
+                chartViewHolder.mChart.getAxisLeft().setAxisMinValue(0);
                 chartViewHolder.mChart.getXAxis().setValueFormatter(new ArrayListAxisValueFormatter(chartXValues));
                 // add legend
                 Legend legend = chartViewHolder.mChart.getLegend();
