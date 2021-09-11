@@ -408,27 +408,32 @@ public class DailyReportFragment extends Fragment implements ReportAdapter.OnIte
         Map<String, ActivityChartDataSet> stepData = new LinkedHashMap<>();
         Map<String, ActivityChartDataSet> distanceData = new LinkedHashMap<>();
         Map<String, ActivityChartDataSet> caloriesData = new LinkedHashMap<>();
+        int hourStepCount = 0;
+        double hourDistance = 0;
+        int hourCalories = 0;
         for (StepCount s1: stepCounts) {
             stepCount += s1.getStepCount();
             distance += s1.getDistance();
             calories += s1.getCalories(context);
-            if (!stepData.containsKey(formatHourMinute.format(s1.getEndTime())) ||
-                    stepData.get(formatHourMinute.format(s1.getEndTime())).getStepCount().getStepCount() < stepCount) {
-                if (s1.getEndTime() > Calendar.getInstance().getTime().getTime()) {
+            if (!stepData.containsKey(formatHourMinute.format(s1.getEndTime())))  {
+                if (s1.getEndTime() > Calendar.getInstance().getTime().getTime() && hourStepCount == 0) {
                     stepData.put(formatHourMinute.format(s1.getEndTime()), null);
                     distanceData.put(formatHourMinute.format(s1.getEndTime()), null);
                     caloriesData.put(formatHourMinute.format(s1.getEndTime()), null);
                 } else {
-                    stepData.put(formatHourMinute.format(s1.getEndTime()), new ActivityChartDataSet(stepCount, s1));
-                    distanceData.put(formatHourMinute.format(s1.getEndTime()), new ActivityChartDataSet(distance, s1));
-                    caloriesData.put(formatHourMinute.format(s1.getEndTime()), new ActivityChartDataSet(calories, s1));
+                    stepData.put(formatHourMinute.format(s1.getEndTime()), new ActivityChartDataSet(hourStepCount, s1));
+                    distanceData.put(formatHourMinute.format(s1.getEndTime()), new ActivityChartDataSet(hourDistance, s1));
+                    caloriesData.put(formatHourMinute.format(s1.getEndTime()), new ActivityChartDataSet(hourCalories, s1));
                 }
-                stepCount = 0;
-                distance = 0;
-                calories = 0;
+                hourStepCount = 0;
+                hourDistance = 0;
+                hourCalories = 0;
             }else{
                 Log.i(LOG_TAG, "Skipping put operation");
             }
+            hourStepCount += s1.getStepCount();
+            hourDistance += s1.getDistance();
+            hourCalories += s1.getCalories(context);
         }
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd. MMMM", locale);

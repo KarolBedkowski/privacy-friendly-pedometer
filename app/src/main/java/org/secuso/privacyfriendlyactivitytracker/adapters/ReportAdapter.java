@@ -268,10 +268,11 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
                         if (chartData.getDisplayedDataType() == ActivityDayChart.DataType.DISTANCE) {
                             val = Double.valueOf(UnitHelper.kilometerToUsersLengthUnit(UnitHelper.metersToKilometers(val), chartViewHolder.context)).floatValue();
                         }
-                        if(lastValue > val){
-                            Log.i("REPORT_ADAPTER", "lastvalue > val, using lastvalue");
-                            val = lastValue;
-                        }
+                        // next value may be lower than previous
+//                        if(lastValue > val){
+//                            Log.i("REPORT_ADAPTER", "lastvalue > val, using lastvalue");
+//                            val = lastValue;
+//                        }
                         Entry prevChartEntry, chartEntry;
                         if (i == 0) {
                             prevChartEntry = new Entry(0, 0);
