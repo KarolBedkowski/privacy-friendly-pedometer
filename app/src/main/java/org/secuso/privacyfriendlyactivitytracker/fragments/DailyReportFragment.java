@@ -423,6 +423,9 @@ public class DailyReportFragment extends Fragment implements ReportAdapter.OnIte
                     distanceData.put(formatHourMinute.format(s1.getEndTime()), new ActivityChartDataSet(distance, s1));
                     caloriesData.put(formatHourMinute.format(s1.getEndTime()), new ActivityChartDataSet(calories, s1));
                 }
+                stepCount = 0;
+                distance = 0;
+                calories = 0;
             }else{
                 Log.i(LOG_TAG, "Skipping put operation");
             }
